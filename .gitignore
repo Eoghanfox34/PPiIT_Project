@@ -25,3 +25,4 @@ yarn-error.log*
 stats.jpg
 uniform.jpg
 league_table.jpg
+process.env
