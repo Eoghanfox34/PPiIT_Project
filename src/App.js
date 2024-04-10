@@ -3,10 +3,12 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import LeagueTables from './Components/LeagueTables';
 import PlayerStats from './Components/PlayerStats';
+import LeagueTable_Hardcoded from './Components/LeagueTable_Hardcoded';
 import Kits from './Components/Kits';
 import leagueTableImg from './league_table.jpg';
 import statsImg from './stats.jpg';
 import uniformImg from './uniform.jpg';
+
 
 function App() {
   return (
@@ -90,7 +92,7 @@ function App() {
               </div>
             </>
           } />
-          <Route path="/leagues" element={<LeagueTables />} />
+          <Route path="/leagues" element={<LeagueTable_Hardcoded />} />
           <Route path="/players" element={<PlayerStats />} />
           <Route path="/kits" element={<Kits />} />
         </Routes>
