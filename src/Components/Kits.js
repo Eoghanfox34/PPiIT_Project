@@ -8,7 +8,7 @@ function Kits() {
             {/* Section for Jerseys */}
             <section className="my-5">
                 <h2>Jerseys</h2>
-                <img src="path_to_jersey_image.jpg" alt="Evolution of Soccer Jerseys" className="img-fluid"/>
+                <img src="kits.jpg" alt="Evolution of Soccer Jerseys" className="img-fluid"/>
                 <p>
                     Soccer jerseys have undergone significant transformation since the sport's inception.<br/>
                     Originally, teams wore thick cotton shirts that were heavy and absorbed sweat, making them uncomfortable over the course of a game.<br/>
