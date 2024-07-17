@@ -1,63 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 
 const LeagueTables = () => {
-  const [standings, setStandings] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+    useEffect(() => {
+        // Function to load the widget script
+        const loadWidgetScript = () => {
+            const script = document.createElement('script');
+            script.src = 'https://widgets.api-sports.io/2.0.3/widgets.js';
+            script.type = 'module';
+            script.async = true;
 
-  useEffect(() => {
-    const options = {
-      method: 'GET',
-      url: 'https://api-football-v1.p.rapidapi.com/v3/standings',
-      params: {season: '2021', league: '39'}, // Example parameters
-      headers: {
-        'X-RapidAPI-Key': 'YOUR_API_KEY',
-        'X-RapidAPI-Host': 'api-football-v1.p.rapidapi.com'
-      }
-    };
+            // Append the script to the body
+            document.body.appendChild(script);
 
-    const fetchLeagueTables = async () => {
-      try {
-        const response = await axios.request(options);
-        setStandings(response.data.response[0].league.standings[0]); // Adjust according to actual response structure
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching league standings:', error);
-        setError(error);
-        setIsLoading(false);
-      }
-    };
+            // Clean up the script when the component unmounts
+            return () => {
+                document.body.removeChild(script);
+            };
+        };
 
-    fetchLeagueTables();
-  }, []);
+        // Load the script when the component mounts
+        loadWidgetScript();
+    }, []); 
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading data. Please try again later.</div>;
-
-  return (
-    <div>
-      <h1>League Standings</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Position</th>
-            <th>Team</th>
-            <th>Points</th>
-          </tr>
-        </thead>
-        <tbody>
-          {standings.map((team, index) => (
-            <tr key={index}>
-              <td>{team.rank}</td>
-              <td>{team.team.name}</td>
-              <td>{team.points}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    return (
+        <div>
+            <h1>League Standings</h1>
+            <div id="wg-api-football-standings"
+                data-host="REACT_APP_API_FOOTBALL_HOST"
+                data-key="REACT_APP_API_FOOTBALL_KEY"  
+                data-league="39"              // Premier League ID
+                data-season="2023"            // Specific season year
+                data-theme="dark"             // Optional theme
+                data-show-errors="true"       // Enable to show errors
+                data-show-logos="true"
+                className="wg_loader">
+            </div>
+        </div>
+    );
 };
 
 export default LeagueTables;

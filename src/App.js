@@ -1,14 +1,12 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import LeagueTables from './Components/LeagueTables';
 import PlayerStats from './Components/PlayerStats';
-import LeagueTable_Hardcoded from './Components/LeagueTable_Hardcoded';
 import Kits from './Components/Kits';
 import leagueTableImg from './league_table.jpg';
 import statsImg from './stats.jpg';
 import uniformImg from './uniform.jpg';
-
+import LeagueTablesWidget from './Components/LeagueTablesWidget'; // Ensure this component has the widget implementation
 
 function App() {
   return (
@@ -92,7 +90,7 @@ function App() {
               </div>
             </>
           } />
-          <Route path="/leagues" element={<LeagueTable_Hardcoded />} />
+          <Route path="/leagues" element={<LeagueTablesWidget />} /> {/* Changed to use LeagueTablesWidget */}
           <Route path="/players" element={<PlayerStats />} />
           <Route path="/kits" element={<Kits />} />
         </Routes>
