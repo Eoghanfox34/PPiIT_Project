@@ -6,8 +6,7 @@ import Kits from './Components/Kits';
 import leagueTableImg from './league_table.jpg';
 import statsImg from './stats.jpg';
 import uniformImg from './uniform.jpg';
-import LeagueTablesWidget from './Components/LeagueTablesWidget'; // Ensure this component has the widget implementation
-
+import LeagueTables from './Components/LeagueTables';
 function App() {
   return (
     <Router>
@@ -90,7 +89,7 @@ function App() {
               </div>
             </>
           } />
-          <Route path="/leagues" element={<LeagueTablesWidget />} /> {/* Changed to use LeagueTablesWidget */}
+          <Route path="/leagues" element={<LeagueTables />} /> 
           <Route path="/players" element={<PlayerStats />} />
           <Route path="/kits" element={<Kits />} />
         </Routes>

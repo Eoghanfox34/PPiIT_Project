@@ -1,102 +1,88 @@
-import React from 'react';
-import './PlayerStats.css';
-import ManCityLogo from './ManCity.png';
-import AstonVillaLogo from './AstonVilla.png';
-import ArsenalLogo from './Arsenal.png';
+// src/PlayerStats.js
+import React, { useState } from 'react';
+import axios from 'axios';
 
-// Data for player statistics
-const playerStats = [
-    {
-        statName: 'Goals',
-        leader: {
-            statValue: 20,
-            playerName: 'Erling Haaland',
-            team: 'Manchester City',
-            teamLogo: require('./ManCity.png'),
-        },
-        otherPlayers: [
-            { playerName: 'Cole Palmer', team: 'Chelsea', statValue: 20 },
-            { playerName: 'Ollie Watkins', team: 'Aston Villa', statValue: 19 },
-            { playerName: 'Alexander Isak', team: 'Newcastle', statValue: 17 },
-        ],
-    },
-    {
-        statName: 'Assists',
-        leader: {
-            statValue: 12,
-            playerName: 'Ollie Watkins',
-            team: 'Aston Villa',
-            teamLogo: require('./AstonVilla.png'),
-        },
-        otherPlayers: [
-            { playerName: 'Pascal Groß', team: 'Brighton', statValue: 10 },
-            { playerName: 'Kieran Trippier', team: 'Newcastle', statValue: 10 },
-            { playerName: 'James Maddison', team: 'Tottenham', statValue: 9 },
-        ],
-    },
-    {
-        statName: 'Passes',
-        leader: {
-            statValue: 2962,
-            playerName: 'Rodri',
-            team: 'Manchester City',
-            teamLogo: require('./ManCity.png'),
-        },
-        otherPlayers: [
-            { playerName: 'Lewis Dunk', team: 'Brighton', statValue: 2886 },
-            { playerName: 'William Saliba', team: 'Arsenal', statValue: 2562 },
-            { playerName: 'Joelinton', team: 'Newcastle', statValue: 2487 },
-        ],
-    },
-    {
-        statName: 'Clean Sheets',
-        leader: {
-            statValue: 14,
-            playerName: 'David Raya',
-            team: 'Arsenal',
-            teamLogo: require('./Arsenal.png'),
-        },
-        otherPlayers: [
-            { playerName: 'Jordan Pickford', team: 'Everton', statValue: 10 },
-            { playerName: 'Bernd Leno', team: 'Fulham', statValue: 9 },
-            { playerName: 'Emiliano Martínez', team: 'Aston Villa', statValue: 8 },
-        ],
-    },
-];
-
-// Component to display player statistics
 const PlayerStats = () => {
-    return (
-        <div className="player-stats-container"> {/* Container for all the stats */}
-            {playerStats.map((stat, index) => (
-                <div key={index} className="player-stat-card"> {/* Card for each stat */}
-                    <h2>{stat.statName}</h2> {/* Stat name */}
-                    <div className="stat-details"> {/* Container for the details */}
-                        <h3>{stat.statValue}</h3> {/* Stat value */}
-                        <p><strong>{stat.leader.playerName}</strong></p> {/* Player's name */}
-                        <p>{stat.leader.team}</p> {/* Team name */}
-                        <img
-                            src={stat.leader.teamLogo}
-                            alt={`${stat.leader.team} logo`}
-                            className={`team-logo ${stat.leader.team === 'Arsenal' || stat.leader.team === 'Aston Villa' ? '' : 'circular-logo'}`} 
-                        />
-                    </div>
-                    {/* Display other leading players */}
-                    <div className="other-players">
-                        {stat.otherPlayers.map((player, idx) => (
-                            <div key={idx} className="other-player-details">
-                                <p><strong>{player.playerName}</strong> {/* Player name in bold */}
-                                {' - '}
-                                {player.team}
-                                </p>
-                                <span>{player.statValue}</span> {/* Stat value */}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            ))}
+  const [playerStats, setPlayerStats] = useState([]);
+  const [lastName, setLastName] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const handleSearch = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+    setPlayerStats([]); // Clear previous results
+
+    try {
+      console.log(`Searching for players with last name: ${lastName}`);
+      const response = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/players?search=${lastName}`, {
+        headers: { 
+          'x-rapidapi-key': '968b920960msh0c2d7de4acb78c3p1c89f4jsn68f17e62e232' 
+        }
+      });
+
+      console.log('API Response:', response.data);
+
+      if (response.data.response.length === 0) {
+        setError('No players found with the entered last name.');
+      } else {
+        setPlayerStats(response.data.response);
+      }
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      setError('An error occurred while fetching the data.');
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+          placeholder="Enter player's last name"
+        />
+        <button type="submit">Search</button>
+      </form>
+
+      {loading && <div>Loading...</div>}
+      {error && <div>{error}</div>}
+
+      {!loading && playerStats.length > 0 && (
+        <div>
+          <h1>Player Statistics</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Team</th>
+                <th>Position</th>
+                <th>Appearances</th>
+                <th>Goals</th>
+                <th>Assists</th>
+              </tr>
+            </thead>
+            <tbody>
+              {playerStats.map((player) => (
+                <tr key={player.player.id}>
+                  <td>{player.player.name}</td>
+                  <td>{player.statistics[0].team.name}</td>
+                  <td>{player.statistics[0].games.position}</td>
+                  <td>{player.statistics[0].games.appearances}</td>
+                  <td>{player.statistics[0].goals.total}</td>
+                  <td>{player.statistics[0].goals.assists}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
-export default PlayerStats; // Export the component
+export default PlayerStats;
