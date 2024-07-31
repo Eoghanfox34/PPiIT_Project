@@ -1,13 +1,20 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
 import PlayerStats from './Components/PlayerStats';
 import Kits from './Components/Kits';
 import leagueTableImg from './league_table.jpg';
 import statsImg from './stats.jpg';
 import uniformImg from './uniform.jpg';
 import LeagueTables from './Components/LeagueTables';
+import Login from './Components/Login';
+import Register from './Components/Register';
+import Admin from './Components/admin';
+
 function App() {
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
   return (
     <Router>
       <div>
@@ -31,7 +38,18 @@ function App() {
                 <li className="nav-item">
                   <Link className="nav-link" to="/kits">Kits</Link>
                 </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">Login</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/register">Register</Link>
+                </li>
               </ul>
+              {loggedInUser && (
+                <span className="navbar-text ms-auto">
+                  Hello {loggedInUser.name}
+                </span>
+              )}
             </div>
           </div>
         </nav>
@@ -92,6 +110,9 @@ function App() {
           <Route path="/leagues" element={<LeagueTables />} /> 
           <Route path="/players" element={<PlayerStats />} />
           <Route path="/kits" element={<Kits />} />
+          <Route path="/login" element={<Login setLoggedInUser={setLoggedInUser} />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </div>
     </Router>
