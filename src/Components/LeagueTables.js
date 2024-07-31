@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import axios from 'axios';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LeagueTables = () => {
   const [standings, setStandings] = useState([]);
   const [country, setCountry] = useState('');
+  const [season, setSeason] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -12,19 +13,21 @@ const LeagueTables = () => {
     event.preventDefault();
     setLoading(true);
     setError(null);
+    setStandings([]); // Clear previous results
 
     try {
-      const response = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/leagues?country=${country}`, {
+      const leagueResponse = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/leagues?country=${country}`, {
         headers: { 
           'x-rapidapi-key': '968b920960msh0c2d7de4acb78c3p1c89f4jsn68f17e62e232' 
         }
       });
 
-      if (response.data.response.length === 0) {
+      if (leagueResponse.data.response.length === 0) {
         setError('No leagues found for the entered country.');
       } else {
-        const leagueId = response.data.response[0].league.id;
-        const standingsResponse = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/standings?league=${leagueId}&season=2023`, {
+        const leagueId = leagueResponse.data.response[0].league.id;
+
+        const standingsResponse = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/standings?league=${leagueId}&season=${season}`, {
           headers: { 
             'x-rapidapi-key': '968b920960msh0c2d7de4acb78c3p1c89f4jsn68f17e62e232' 
           }
@@ -40,15 +43,31 @@ const LeagueTables = () => {
   };
 
   return (
-    <div>
+    <div className="container mt-5">
       <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          placeholder="Enter country name"
-        />
-        <button type="submit">Search</button>
+        <div className="form-group">
+          <label htmlFor="country">Country</label>
+          <input
+            type="text"
+            id="country"
+            className="form-control"
+            value={country}
+            onChange={(e) => setCountry(e.target.value)}
+            placeholder="Enter country name"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="season">Season</label>
+          <input
+            type="text"
+            id="season"
+            className="form-control"
+            value={season}
+            onChange={(e) => setSeason(e.target.value)}
+            placeholder="Enter season (e.g., 2023)"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">Search</button>
       </form>
 
       {loading && <div>Loading...</div>}
@@ -57,19 +76,27 @@ const LeagueTables = () => {
       {!loading && standings.length > 0 && (
         <div>
           <h1>League Standings</h1>
-          <table>
-            <thead>
+          <table className="table table-striped">
+            <thead className="thead-dark">
               <tr>
-                <th>Position</th>
-                <th>Team</th>
-                <th>Points</th>
+                <th scope="col">#</th>
+                <th scope="col">Team</th>
+                <th scope="col">Played</th>
+                <th scope="col">Won</th>
+                <th scope="col">Drawn</th>
+                <th scope="col">Lost</th>
+                <th scope="col">Points</th>
               </tr>
             </thead>
             <tbody>
-              {standings.map((team) => (
+              {standings.map((team, index) => (
                 <tr key={team.team.id}>
-                  <td>{team.rank}</td>
+                  <th scope="row">{index + 1}</th>
                   <td>{team.team.name}</td>
+                  <td>{team.all.played}</td>
+                  <td>{team.all.win}</td>
+                  <td>{team.all.draw}</td>
+                  <td>{team.all.lose}</td>
                   <td>{team.points}</td>
                 </tr>
               ))}
@@ -82,3 +109,4 @@ const LeagueTables = () => {
 };
 
 export default LeagueTables;
+
