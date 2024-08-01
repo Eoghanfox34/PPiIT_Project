@@ -3,12 +3,14 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PlayerStats = () => {
+  // State variables to manage top scorers, country, season, loading status, and error messages
   const [topScorers, setTopScorers] = useState([]);
   const [country, setCountry] = useState('');
   const [season, setSeason] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Handle form submission for searching top scorers
   const handleSearch = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -112,5 +114,6 @@ const PlayerStats = () => {
 };
 
 export default PlayerStats;
+
 
 

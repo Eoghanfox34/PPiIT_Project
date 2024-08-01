@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Routes, Route, Link, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import PlayerStats from './Components/PlayerStats';
 import Kits from './Components/Kits';
 import leagueTableImg from './league_table.jpg';
@@ -13,11 +12,18 @@ import Register from './Components/Register';
 import Admin from './Components/admin';
 
 function App() {
+  // State variable to track the logged-in user
   const [loggedInUser, setLoggedInUser] = useState(null);
+
+  // Function to handle logout
+  const handleLogout = () => {
+    setLoggedInUser(null);
+  };
 
   return (
     <Router>
       <div>
+        {/* Navbar with links to different pages */}
         <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
           <div className="container-fluid">
             <Link className="navbar-brand" to="/">Soccer History Hub</Link>
@@ -27,9 +33,6 @@ function App() {
             <div className="collapse navbar-collapse" id="navbarNav">
               <ul className="navbar-nav">
                 <li className="nav-item">
-                  <Link className="nav-link" to="/">Home</Link>
-                </li>
-                <li className="nav-item">
                   <Link className="nav-link" to="/leagues">Leagues</Link>
                 </li>
                 <li className="nav-item">
@@ -38,22 +41,33 @@ function App() {
                 <li className="nav-item">
                   <Link className="nav-link" to="/kits">Kits</Link>
                 </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/login">Login</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/register">Register</Link>
-                </li>
+                {!loggedInUser && (
+                  <>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/login">Login</Link>
+                    </li>
+                    <li className="nav-item">
+                      <Link className="nav-link" to="/register">Register</Link>
+                    </li>
+                  </>
+                )}
               </ul>
+              {/* Display welcome message with a dropdown to logout if user is logged in */}
               {loggedInUser && (
-                <span className="navbar-text ms-auto">
-                  Hello {loggedInUser.name}
-                </span>
+                <div className="dropdown ms-auto">
+                  <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    Hello {loggedInUser.name}
+                  </button>
+                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
+                  </ul>
+                </div>
               )}
             </div>
           </div>
         </nav>
 
+        {/* Define routes for the application */}
         <Routes>
           <Route path="/" element={
             <>

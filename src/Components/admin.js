@@ -3,11 +3,14 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Admin = () => {
+  // State variable to manage the list of users
   const [users, setUsers] = useState([]);
 
+  // Fetch the list of users when the component mounts
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        // Fetch users from the server
         const response = await axios.post('http://localhost:5000/login', { email: 'admin@gmail.com' });
         setUsers(response.data);
       } catch (error) {
@@ -18,9 +21,12 @@ const Admin = () => {
     fetchUsers();
   }, []);
 
+  // Handle user deletion
   const handleDelete = async (userId) => {
     try {
+      // Delete user from the server
       await axios.delete(`http://localhost:5000/users/${userId}`);
+      // Update the list of users
       setUsers(users.filter(user => user._id !== userId));
     } catch (error) {
       console.error('There was an error deleting the user!', error);
@@ -62,6 +68,7 @@ const Admin = () => {
 };
 
 export default Admin;
+
 
 
 

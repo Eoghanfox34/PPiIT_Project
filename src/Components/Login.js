@@ -3,25 +3,31 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Login = () => {
+const Login = ({ setLoggedInUser }) => {
+  // State variables to manage email and error messages
   const [email, setEmail] = useState('');
-  const [error, setError] = useState(null); // State variable to handle error messages
+  const [error, setError] = useState(null); 
   const navigate = useNavigate();
 
+  // Handle form submission for logging in
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Clear previous error
+    setError(null); 
     try {
+      // Send login request to the server
       const response = await axios.post('http://localhost:5000/login', { email });
       if (email === 'admin@gmail.com') {
+        // Redirect admin user to admin panel
         navigate('/admin');
       } else {
+        // Set logged-in user state and redirect to home page
+        setLoggedInUser(response.data);
         console.log('User logged in:', response.data);
         navigate('/');
       }
     } catch (error) {
       console.error('There was an error logging in!', error);
-      setError('There was an error logging in. Please try again.'); // Set error message
+      setError('There was an error logging in. Please try again.'); 
     }
   };
 
@@ -40,7 +46,8 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        {error && <div className="alert alert-danger mt-3">{error}</div>} {/* Display error message */}
+        {/* Display error message */}
+        {error && <div className="alert alert-danger mt-3">{error}</div>}
         <button type="submit" className="btn btn-primary mt-3">Login</button>
       </form>
     </div>
@@ -48,3 +55,4 @@ const Login = () => {
 };
 
 export default Login;
+

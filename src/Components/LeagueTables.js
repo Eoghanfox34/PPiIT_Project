@@ -3,12 +3,14 @@ import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const LeagueTables = () => {
+  // State variables to manage the league standings, country, season, loading status, and error messages
   const [standings, setStandings] = useState([]);
   const [country, setCountry] = useState('');
   const [season, setSeason] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Handle form submission for searching league standings
   const handleSearch = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -16,6 +18,7 @@ const LeagueTables = () => {
     setStandings([]); // Clear previous results
 
     try {
+      // Fetch leagues based on the entered country
       const leagueResponse = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/leagues?country=${country}`, {
         headers: { 
           'x-rapidapi-key': '968b920960msh0c2d7de4acb78c3p1c89f4jsn68f17e62e232' 
@@ -27,6 +30,7 @@ const LeagueTables = () => {
       } else {
         const leagueId = leagueResponse.data.response[0].league.id;
 
+        // Fetch standings for the identified league and season
         const standingsResponse = await axios.get(`https://api-football-v1.p.rapidapi.com/v3/standings?league=${leagueId}&season=${season}`, {
           headers: { 
             'x-rapidapi-key': '968b920960msh0c2d7de4acb78c3p1c89f4jsn68f17e62e232' 
